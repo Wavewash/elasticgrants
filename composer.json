@@ -1,0 +1,7 @@
+{
+    "name": "ubuntu/loadgrants",
+    "description": "load dem grants",
+    "require": {
+        "elasticsearch/elasticsearch": "^2.2"
+    }
+}
