@@ -2,18 +2,32 @@
 require __DIR__ . '/vendor/autoload.php';
 
 //$inputf = 'GrantsDBExtract20161017v2.xml';
+//$inputhost = '192.168.99.100:9200';
+//$inputIndex = 'grantsdedupedwdates';
 
+if (count($argv) != 4 )
+{
+	echo "incorrect number of parameters \n";
+	echo "use: php load.php [elasticsearch ip] [grantsxml] [index] \n";
+	echo "example: php load.php 192.168.99.100:9200 GrantsDBExtract20161017v2.xml grantsdedupedwdates \n";
+die;	
+}
 
 $keysarray = [];
-$inputf = $argv[1];
-$hosts = ['192.168.99.100:9200'];
+$inputhost = $argv[1];
+$inputf = $argv[2];
+$inputIndex = $argv[3];
+
+
+
+$hosts = [$inputhost];
 $client = Elasticsearch\ClientBuilder::create()->setHosts($hosts)->build();
 
 
 
 function parseNodesNamed($nodenamed)
 {
-	global $keysarray,$inputf,$client;
+	global $keysarray, $inputf, $client, $inputIndex;
 
 	$z = new XMLReader;
 	$z->open($inputf);
@@ -35,7 +49,7 @@ function parseNodesNamed($nodenamed)
 			
 			$params['body'][] = [
 		        'index' => [
-		            '_index' => 'grantsdeduped',
+		            '_index' => $inputIndex,
 		            '_type' => $z->name,
 		            '_id' => (string) $grant->OpportunityID
 		        ]
